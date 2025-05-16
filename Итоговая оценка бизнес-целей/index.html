@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Итоговая оценка бизнес-целей</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="total-evaluation">
+        <header>
+            <h2>Итоговая оценка бизнес-целей</h2>
+        </header>
+        <div class="table-wrapper">
+            <table class="total-evaluation__table" id="total-evaluation__table">
+                <thead>
+                    <tr>
+                        <th class="total-evaluation__result-col">Оценка за год</th>
+                        <th class="total-evaluation__leader-comment-col">Комментарий руководителя по итогам года</th>
+                        <th class="total-evaluation__worker-comment-col">Комментарий сотрудника по итогам года</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const comments = {
+                leader_comment: `ывавыа`,
+                worker_comment: `234234`,
+            };
+
+            const tableRow = typeof comments === 'object' ? `<tr class="total-evaluation__table-row">
+                    <td class="total-evaluation__result-col">
+                        <div class="result-list-wrapper">
+                            <span>Значительный результат</span>
+                        </div>
+                    </td>
+                    <td class="total-evaluation__leader-comment-col">
+                       <pre>${comments.leader_comment}</pre>
+                    </td>
+                    <td class="total-evaluation__worker-comment-col">
+                       <pre>${comments.worker_comment}</pre>
+                    </td>
+                </tr>` : '';
+
+            const totalEvaluationTable = document.querySelector('#total-evaluation__table > tbody'); // идентификация тела таблицы
+            totalEvaluationTable.insertAdjacentHTML('beforeend', tableRow); // добавление строки в тело таблицы
+        });
+    </script>
+</body>
+</html>

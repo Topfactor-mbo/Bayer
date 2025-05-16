@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Мои задачи</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            padding: 10px;
+            background-color: #cfd6dc;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        table, tr, th, td {
+            border-collapse: collapse;
+        }
+
+        .my-tasks {
+            width: 100%;
+            border: 2px solid #dedada;
+            border-radius: 10px;
+            padding: 10px 0 0;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background-color: #fff;
+        }
+
+        .my-tasks .table-item tr:not(.table-header-row) {
+            transition: .3s;
+        }
+
+        .my-tasks .header-line {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .my-tasks .article-title {
+            font-size: 18px;
+        }
+
+        .my-tasks .article-title,
+        .my-tasks tr > td > * {
+            color: #003a4f;
+        }
+
+        .my-tasks .table-block,
+        .my-tasks .table-item {
+            width: 100%;
+        }
+
+        .my-tasks .table-item th {
+            text-align: left;
+            color: #959BAE;
+            font-weight: 400;
+        }
+
+        .my-tasks .table-item th:first-child,
+        .my-tasks .table-item td:first-child {
+            width: 80%;
+        }
+
+        .my-tasks .table-item th,
+        .my-tasks .table-item td {
+            padding: 12px 20.3px;
+        }
+
+        .my-tasks .table-item th:nth-last-child(-n + 2),
+        .my-tasks .table-item td:nth-last-child(-n + 2) {
+            min-width: 121px;
+        }
+
+        .my-tasks .table-item th:not(:nth-child(-n + 1)),
+        .my-tasks .table-item td:not(:nth-child(-n + 1)) {
+            text-align: center;
+        }
+
+        .my-tasks .table-item .table-header-row {
+            border-bottom: 2px solid rgba(149, 155, 175, .25);
+        }
+
+        .my-tasks .table-item tr:not(.table-header-row):not(.empty):hover {
+            background-color: #ccf2ff;
+            cursor: pointer;
+        }
+
+        .my-tasks time {
+            transition: color .3s;
+        }
+
+        .my-tasks .table-item tr:not(.table-header-row):not(.empty):hover * {
+            color: #1a475e;
+        }
+
+        .my-tasks .empty td {
+            padding-left: 20.3px;
+        }
+    </style>
+</head>
+<body>
+    <section class="my-tasks">
+        <div class="header-line">
+            <h2 class="article-title">Задачи бизнес-процессов</h2>
+        </div>
+        <div class="table-block">
+            <table class="table-item" id="my-tasks-table">
+                <thead>
+                    <tr class="table-header-row">
+                        <th>Наименование</th>
+                        <th>Дата начала</th>
+                        <th>Дата выполнения</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const myTasksTable = document.querySelector('#my-tasks-table tbody');
+
+            const serverDataMyTasks = {
+                row_1: {
+                    row_id: 'id_Строка1',
+                    name: 'Начался процесс постановки бизнес-целей: заполните бизнес-цели',
+                    button_id: 'id_Задание1',
+                    date_start: '28.11.2025',
+                    due_date: '28.11.2025',
+                },
+                row_2: {
+                    row_id: 'id_Строка2',
+                    name: 'Подведение итогов: заполните оценки по сотрудникам',
+                    button_id: 'id_Задание2',
+                    date_start: '28.11.2025',
+                    due_date: '28.11.2025',
+                },
+                row_3: {
+                    row_id: 'id_Строка2',
+                    name: 'Оцените уволенного сотрудника: Иванов Петр Алексеевич (Менеджер)',
+                    button_id: 'id_Задание2',
+                    date_start: '28.11.2025',
+                    due_date: '28.11.2025',
+                }
+            };
+
+            const rows = typeof serverDataMyTasks === 'object' ? Object.values(serverDataMyTasks).map(item => {
+                const [date_start, due_date] = [
+                    item.date_start.split('.'),
+                    item.due_date.split('.')
+                ];
+
+                const dateStartUS = `${date_start[2]}-${date_start[1]}-${date_start[0]}`;
+                const dueDateUS = `${due_date[2]}-${due_date[1]}-${due_date[0]}`;
+
+                return `<tr id="${item.row_id}">
+                    <td>
+                        <button class="my-task-btn" id="${item.button_id}" type="button">${item.name}</button>
+                    </td>
+                    <td>
+                        <time datetime="${dateStartUS}">${item.date_start}</time>
+                    </td>
+                    <td>
+                        <time datetime="${dueDateUS}">${item.due_date}</time>
+                    </td>
+                </tr>`;
+            }) : ['<tr class="empty"><td>Нет активных задач</td></tr>'];
+
+            myTasksTable.insertAdjacentHTML('beforeend', rows.join(''));
+        });
+    </script>
+</body>
+</html>

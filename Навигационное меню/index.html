@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Навигационное меню</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="navigation-panel">
+        <nav class="nav-menu">
+            <ul class="nav-items">
+
+            </ul>
+        </nav>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelector('.nav-items');
+
+            const navLinksNames = {
+                my_business_goals: true,
+                my_project_team_business_goals: true,
+                my_team_business_goals: true,
+                dialog: true,
+            };
+
+            const RuNames = ['Мои бизнес-цели', 'Бизнес-цели моей проектной команды', 'Бизнес-цели моей команды', 'Диалог о развитии'];
+
+            const links = Object.values(navLinksNames).map((link, index) => {
+                if (link) {
+                    return `<li class="nav-item">
+                        <a class="nav-link" href="#">${RuNames[index]}</a>
+                    </li>`;
+                }
+            });
+
+            navItems.insertAdjacentHTML('beforeend', links.join(''));
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach((link, _, arr) => {
+                link.addEventListener('click', e => {
+                    arr.forEach(item => item.classList.remove('nav-active'));
+                    e.target.classList.add('nav-active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

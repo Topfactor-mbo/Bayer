@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Потенциал</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="monitoring-wrapper">
+        <div class="monitoring">
+            <div class="monitoring-span">
+                <span>Потенциал:</span>
+                <span></span>
+            </div>
+            <div class="monitoring-span">
+                <span>Риск потери:</span>
+                <span></span>
+            </div>
+            <div class="monitoring-span">
+                <span>Влияние потери:</span>
+                <span></span>
+            </div>
+        </div>
+        <div class="last-date monitoring-span">
+            <span>Последнее изменение:</span>
+            <span></span>
+            <button class="pencil-btn" type="button"></button>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const data = {
+                potential: 'Высокий',
+                risk: 'Высокий',
+                influence: 'Среднее',
+                last_date_change: '07.04.2025'
+            }
+
+            const keys = Object.keys(data);
+
+            const spans = document.querySelectorAll('.monitoring-span');
+            spans.forEach((span, index) => {
+                span.children[1].textContent = data[keys[index]];
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .matrix-wrapper {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px 40px 100px;
+        }
+
+        .align-start {
+            align-items: flex-start;
+        }
+
+        .matrix {
+            display: grid;
+            grid: repeat(3, minmax(100px, 260px)) / repeat(3, minmax(100px, 1fr));
+            border-left: 1px solid #000;
+            border-bottom: 1px solid #000;
+        }
+
+        .matrix > .cell {
+            display: flex;
+            flex-direction: column;
+            font-size: 14px;
+            padding: 3px;
+            border-top: 1px solid #000;
+            border-right: 1px solid #000;
+            position: relative;
+        }
+
+        .matrix > .cell:before,
+        .matrix > .cell:nth-child(4):after {
+            display: inline-block;
+            position: absolute;
+            pointer-events: none;
+            transform: rotate(-90deg) translate(-35%, 70%);
+            top: 50%;
+            transform-origin: left bottom;
+            left: -25px;
+            font-size: 17px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .matrix > .cell:first-child:before {
+            content: 'Exceeded';
+        }
+
+        .matrix > .cell:nth-child(4):before {
+            content: 'Fully Met';
+        }
+
+        .matrix > .cell:nth-child(4):after {
+            content: 'Performance';
+            transform: rotate(-90deg) translate(-40%, -150%);
+            font-weight: 400;
+        }
+
+        .matrix > .cell:nth-child(7):before {
+            content: 'Below Expectation';
+        }
+
+        .matrix > .cell:nth-child(8):before,
+        .matrix > .cell:nth-last-child(-n + 3):after {
+            display: inline-block;
+            position: absolute;
+            top: calc(100% + 15px);
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            font-size: 17px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .matrix > .cell:nth-child(7):after {
+            content: 'Well Placed';
+        }
+
+        .matrix > .cell:nth-child(8):before {
+            content: 'Potential';
+            top: calc(100% + 55px);
+            font-weight: 400;
+        }
+
+        .matrix > .cell:nth-child(8):after {
+            content: 'Potential';
+        }
+
+        .matrix > .cell:nth-child(9):after {
+            content: 'High Potential';
+        }
+
+        .list {
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #000;
+            width: 250px;
+            margin-left: 50px;
+        }
+
+        .list__content {
+            flex-grow: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0 6px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .cell__content {
+            width: 100%;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            margin-top: 5px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .worker {
+            display: flex;
+            align-items: center;
+        }
+
+        .worker:first-child {
+            margin-top: auto;
+        }
+
+        .worker > .worker-photo {
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .show-hide-list {
+            padding: 10px;
+            text-align: center;
+            background-color: #4472c4;
+            color: #fff;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<section class="matrix-wrapper align-start">
+    <div class="matrix">
+        <div id="cell-1" class="cell">
+            <span>Exceeded - Well Placed <span class="workers-amount">4</span></span>
+            <div class="cell__content" data-group="row-1">
+                <div class="worker draggable">
+                    <figure class="worker-photo">
+                        <img src="на всякий.png" alt="Имя работника">
+                    </figure>
+                    <span class="worker-name">Сафронов А.А.</span>
+                </div>
+                <div class="worker draggable">
+                    <figure class="worker-photo">
+                        <img src="на всякий.png" alt="Имя работника">
+                    </figure>
+                    <span class="worker-name">Сафронов А.А.</span>
+                </div>
+                <div class="worker draggable">
+                    <figure class="worker-photo">
+                        <img src="на всякий.png" alt="Имя работника">
+                    </figure>
+                    <span class="worker-name">Сафронов А.А.</span>
+                </div>
+                <div class="worker draggable">
+                    <figure class="worker-photo">
+                        <img src="на всякий.png" alt="Имя работника">
+                    </figure>
+                    <span class="worker-name">Сафронов А.А.</span>
+                </div>
+            </div>
+        </div>
+        <div id="cell-2" class="cell">
+            <span>Exceeded - Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-1">
+
+            </div>
+        </div>
+        <div id="cell-3" class="cell">
+            <span>Below Expectation - High Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-1">
+
+            </div>
+        </div>
+        <div id="cell-4" class="cell">
+            <span>Fully Met - Well Placed <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-2">
+
+            </div>
+        </div>
+        <div id="cell-5" class="cell">
+            <span>Fully Met - Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-2">
+
+            </div>
+        </div>
+        <div id="cell-6" class="cell">
+            <span>Below Expectation - High Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-2">
+
+            </div>
+        </div>
+        <div id="cell-7" class="cell">
+            <span>Below Expectation - Well Placed <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-3">
+
+            </div>
+        </div>
+        <div id="cell-8" class="cell">
+            <span>Below Expectation - Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-3">
+
+            </div>
+        </div>
+        <div id="cell-9" class="cell">
+            <span>Below Expectation - High Potential <span class="workers-amount">0</span></span>
+            <div class="cell__content" data-group="row-3">
+
+            </div>
+        </div>
+    </div>
+    <div class="list">
+        <button class="show-hide-list hide" id="show-hide-list" type="button">Unplotted</button>
+        <div class="list__content" id="external-dropzone"></div>
+    </div>
+</section>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+<script>
+    const fromCounter = evt => {
+        const parentCellFrom = evt.from.closest('.cell');
+        const workersAmountLast = parentCellFrom.querySelector('.workers-amount');
+        workersAmountLast.textContent = evt.from.children.length;
+    }
+
+    const toCounter = evt => {
+        const parentCellTo = evt.to.closest('.cell');
+        const workersAmountNew = parentCellTo.querySelector('.workers-amount');
+        workersAmountNew.textContent = evt.to.children.length;
+    }
+
+    const counter = evt => {
+        if (evt.to.id === 'external-dropzone') {
+            fromCounter(evt);
+        } else if (evt.from.id === 'external-dropzone') {
+            toCounter(evt);
+        } else {
+            fromCounter(evt);
+            toCounter(evt);
+        }
+    };
+
+    // Разрешаем перетаскивание между всеми .cell__content
+    document.querySelectorAll('.cell__content').forEach(container => {
+        new Sortable(container, {
+            group: {
+                name: container.dataset.group,
+                put: (to, from, item) => {
+                    // Разрешить дроп только если:
+                    // 1. Элемент из той же строки, ИЛИ
+                    // 2. Элемент пришёл из внешнего контейнера
+                    return from.el.dataset.group === to.el.dataset.group || from.el.id === 'external-dropzone';
+                },
+            }, // Общая группа для всех контейнеров
+            animation: 150,
+            onAdd: evt => {
+                counter(evt);
+            },
+            onRemove: evt => {
+                counter(evt);
+            },
+            direction: 'horizontal'
+        });
+    });
+
+    new Sortable(document.getElementById('external-dropzone'), {
+        group: {
+            name: 'external-dropzone',
+            pull: true,
+            put: true,
+        },
+        animation: 150,
+        onAdd: evt => {    // Действие при добавлении элемента
+            console.log('Элемент добавлен во внешний контейнер!', evt.item);
+        }
+    });
+
+    const showHideList = document.getElementById('show-hide-list');
+    const matrixWrapper = document.querySelector('.matrix-wrapper');
+    const listContent = document.querySelector('.list__content');
+    showHideList.addEventListener('click', e => {
+        if (e.target.classList.contains('hide')) {
+            matrixWrapper.classList.remove('align-start');
+            e.target.classList.remove('hide');
+            listContent.style.height = 'auto';
+        } else {
+            matrixWrapper.classList.add('align-start');
+            e.target.classList.add('hide');
+            listContent.style.height = 0;
+        }
+    });
+</script>
+</body>
+</html>

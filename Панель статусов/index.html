@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Панель статусов</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="statuses-panel">
+        <div class="statuses-wrapper">
+            <span class="straight-line"></span>
+            <div class="circle-status">
+                <span>постановка целей</span>
+            </div>
+            <div class="circle-status">
+                <span>check in</span>
+            </div>
+            <div class="circle-status">
+                <span>подведение итогов</span>
+            </div>
+            <div class="circle-status">
+                <span>завершено</span>
+            </div>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const coloredAmount = [3, 0]; // [порядковый номер статуса (1 - 4), порядковый номер состояния (0 - 2)]
+
+            /**
+             * Номера состояний:
+             * 0 - не запущен (Белый)
+             * 1 - запущен (Оранжевый)
+             * 2 - Выполнен (Зеленый)
+             */
+
+            const states = {
+                0: 'not_launched',
+                1: 'launched',
+                2: 'passed'
+            };
+
+            const circleStatuses = document.querySelectorAll(`.circle-status:nth-of-type(-n + ${coloredAmount[0]})`);
+            circleStatuses.forEach((status, index) => {
+                index++;
+
+                index < coloredAmount[0]
+                    ? status.classList.add('passed')
+                    : status.classList.add(states[coloredAmount[1]]);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+:root {
+    --blue-color: #007cbf;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+
+body {
+    padding: 10px;
+    background-color: #cfd6dc;
+}
+
+button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+table, tr, th, td {
+    border-collapse: collapse;
+}
+
+pre {
+    white-space: pre-wrap;
+    border: none;
+    outline: none;
+    position: relative;
+}
+
+/* Сильные стороны */
+
+thead h2 {
+    color: var(--blue-color);
+    text-align: left;
+    font-size: 20px;
+}
+
+.strong-sides {
+    width: 100%;
+    border: 1px solid #dedada;
+    border-radius: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background-color: #fff;
+}
+
+.strong-sides__table {
+    width: 100%;
+}
+
+.strong-sides__table th,
+.strong-sides__table td {
+    padding: 10px;
+    color: #003a4f;
+    font-weight: 400;
+    text-align: left;
+}
+
+.strong-sides__table tbody > tr {
+    border-top: 1px solid var(--blue-color);
+}
+
+.strong-sides__table tbody pre.empty-pre:after {
+    content: attr(data-placeholder);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    color: #959bae;
+    font-size: 15px;
+    pointer-events: none;
+}
+
+td.title-col {
+    font-weight: 600;
+}
+
+td.worker-comment-col,
+td.leader-comment-col {
+    cursor: text;
+}
+
+.title-col {
+    width: 550px;
+    max-width: 550px;
+    min-width: 200px;
+}
+
+.worker-comment-col,
+.leader-comment-col {
+    width: 600px;
+    max-width: 600px;
+    min-width: 400px;
+}

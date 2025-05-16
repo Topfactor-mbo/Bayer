@@ -1,0 +1,579 @@
+﻿<html lang="ru" dir="ltr"><head></head><body>﻿<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><meta http-equiv="X-UA-Compatible" content="ie=edge"><title>Дерево</title><style>
+    * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        html {
+            padding: 5px;
+        }
+
+        html, body, .main-content, table, tr, td {
+            width: 100%;
+        }
+
+        body {
+            background-color: #cfd6dc;
+            /*width: 100%;
+            overflow: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #CCC #F0F0F0;*/ /* Mozilla Firefox */
+            overflow: hidden;
+            padding-bottom: 10px;
+        }
+
+        /* Google Chrome (Chromium) */
+
+        .table-section {
+            height: 100%;
+            overflow: auto;
+        }
+
+        .table-section::-webkit-scrollbar {
+            width: 10px;               /* ширина scrollbar */
+            height: 10px;
+        }
+
+        .table-section::-webkit-scrollbar-track {
+            background: #F0F0F0;        /* цвет дорожки */
+        }
+
+        .table-section::-webkit-scrollbar-thumb {
+            background-color: #CCC;    /* цвет плашки */
+            border-radius: 20px;       /* закругления плашки */
+            border: 3px solid #F0F0F0;  /* padding вокруг плашки */
+        }
+
+        .main-content {
+            border: 1px solid rgba(149, 155, 175, .25);
+            border-radius: 12px;
+            padding: 8px 0;
+            background-color: #fff;
+        }
+
+        table, tr, td {
+            border-collapse: collapse;
+        }
+
+        button {
+            background-color: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+
+        h2 {
+            padding-left: 21px;
+            font-size: 18px;
+            color: #007CBF;
+            font-weight: 500;
+        }
+
+        .personnel {
+            margin-top: 5px;
+        }
+
+        .row {
+            height: 33px;
+            transition: .3s;
+            cursor: pointer;
+            border-top: 1px solid #ddd;
+        }
+
+        .row:hover,
+        .selected {
+            background-color: #CCF2FF;
+            color: #1A475E;
+        }
+
+        .leader {
+            color: #000;
+        }
+
+        .row-content {
+            display: flex;
+            align-items: center;
+            min-height: 33px;
+            max-height: 33px;
+            padding: 2px 0;
+            font-size: 13px;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .row-content > *:not(:first-child) {
+            margin-left: 7px;
+        }
+
+        .show-btn {
+            min-width: 12px;
+            height: 33px;
+        }
+
+        .plus {
+            background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE3LjY0MjEgNi45MDM0NkMxNy40MDM0IDYuNjY0OCAxNy4xMTM1IDYuNTQ1NTIgMTYuNzcyNyA2LjU0NTUySDExLjQ1NDRWMS4yMjcxNUMxMS40NTQ0IDAuODg2MzU3IDExLjMzNSAwLjU5NjUxNiAxMS4wOTY1IDAuMzU3ODU2QzEwLjg1NzkgMC4xMTkzNzUgMTAuNTY4MiAwIDEwLjIyNyAwSDcuNzcyNjRDNy40MzE4IDAgNy4xNDIgMC4xMTkyNDEgNi45MDMzNCAwLjM1NzkwMUM2LjY2NDY4IDAuNTk2NTYxIDYuNTQ1NCAwLjg4NjQwMSA2LjU0NTQgMS4yMjcyVjYuNTQ1NTZIMS4yMjcyQzAuODg2NDAzIDYuNTQ1NTYgMC41OTY1NjMgNi42NjQ4NSAwLjM1NzkwMiA2LjkwMzUxQzAuMTE5MjQxIDcuMTQyMTcgMCA3LjQzMTc0IDAgNy43NzI3NlYxMC4yMjc0QzAgMTAuNTY4NSAwLjExOTE5NiAxMC44NTgxIDAuMzU3ODU3IDExLjA5NjVDMC41OTY1MTggMTEuMzM1MyAwLjg4NjM1OSAxMS40NTQ1IDEuMjI3MTYgMTEuNDU0NUg2LjU0NTM1VjE2Ljc3MjlDNi41NDUzNSAxNy4xMTM3IDYuNjY0NjQgMTcuNDAzOCA2LjkwMzMgMTcuNjQyNEM3LjE0MTk2IDE3Ljg4MDggNy40MzE3NiAxOCA3Ljc3MjYgMThIMTAuMjI3MUMxMC41NjgyIDE4IDEwLjg1NzggMTcuODgwOCAxMS4wOTY1IDE3LjY0MjRDMTEuMzM1MyAxNy40MDM3IDExLjQ1NDUgMTcuMTEzNyAxMS40NTQ1IDE2Ljc3MjlWMTEuNDU0NUgxNi43NzI2QzE3LjExMzcgMTEuNDU0NSAxNy40MDM1IDExLjMzNTMgMTcuNjQyMSAxMS4wOTY1QzE3Ljg4MDcgMTAuODU4MSAxOCAxMC41Njg1IDE4IDEwLjIyNzRWNy43NzI3NkMxNy45OTk5IDcuNDMxNzQgMTcuODgwOCA3LjE0MTk5IDE3LjY0MjEgNi45MDM0NloiIGZpbGw9IiMwMDdDQkYiLz4KPC9zdmc+Cg==) no-repeat center / contain;
+        }
+
+        .minus {
+            background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iNSIgdmlld0JveD0iMCAwIDE4IDUiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNy42NDIyIDAuMzU3OTk0QzE3LjQwMzUgMC4xMTkzMzEgMTcuMTEzNiAwIDE2Ljc3MjggMEgxLjIyNzE2QzAuODg2MzY1IDAgMC41OTY1MjIgMC4xMTkzMzEgMC4zNTc4NiAwLjM1Nzk5NEMwLjExOTE5NyAwLjU5NjYxMiAwIDAuODg2Mjc2IDAgMS4yMjcyNVYzLjY4MTk0QzAgNC4wMjMwMSAwLjExOTE5NyA0LjMxMjY3IDAuMzU3ODYgNC41NTEwN0MwLjU5NjUyMiA0Ljc4OTgyIDAuODg2MzY1IDQuOTA5MDIgMS4yMjcxNiA0LjkwOTAySDE2Ljc3MjdDMTcuMTEzNSA0LjkwOTAyIDE3LjQwMzUgNC43ODk4MiAxNy42NDIyIDQuNTUxMDdDMTcuODgwNiA0LjMxMjY3IDE4IDQuMDIzMDEgMTggMy42ODE5NFYxLjIyNzI1QzE4IDAuODg2Mjc2IDE3Ljg4MSAwLjU5NjQ3NyAxNy42NDIyIDAuMzU3OTk0WiIgZmlsbD0iIzAwN0NCRiIvPgo8L3N2Zz4K) no-repeat center / contain;
+        }
+
+        .row-img {
+            width: 13px;
+            height: 17px;
+            position: relative;
+            display: inline-block;
+        }
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+span {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+span:last-child {
+  vertical-align: middle;
+  display: inline;
+} 
+
+.employee {
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTggOEMxMC4yMSA4IDEyIDYuMjEgMTIgNEMxMiAxLjc5IDEwLjIxIDAgOCAwQzUuNzkgMCA0IDEuNzkgNCA0QzQgNi4yMSA1Ljc5IDggOCA4Wk04IDEwQzUuMzMgMTAgMCAxMS4zNCAwIDE0VjE2SDE2VjE0QzE2IDExLjM0IDEwLjY3IDEwIDggMTBaIiBmaWxsPSIjMDA3Q0JGIi8+Cjwvc3ZnPgo=) no-repeat center / 16px;
+    margin-right: 10px;
+}
+
+.division {
+    width: 0;
+}
+
+.leader {
+    display: inline-block;
+    background-color: #d9d9d9;
+    padding: 5px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.green-tick,
+.green-lamp {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+}
+
+.green-tick {
+    right: calc(100% + 6px);
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguOTg0MjkgMTcuMzQzOEM3LjgyMjUyIDE3LjM0MzQgNi42Nzc0MiAxNy4wNjc0IDUuNjQzMDUgMTYuNTM4NUM0LjYwODY3IDE2LjAwOTUgMy43MTQ1NSAxNS4yNDI3IDMuMDM0MTMgMTQuMzAxMUMyLjM1MzcxIDEzLjM1OTQgMS45MDY0MSAxMi4yNjk3IDEuNzI4OTggMTEuMTIxNkMxLjU1MTU0IDkuOTczNDYgMS42NDkwNCA4Ljc5OTYgMi4wMTM0NSA3LjY5NjQ3QzIuMzc3ODcgNi41OTMzMyAyLjk5ODggNS41OTI0IDMuODI1MjUgNC43NzU4OEM0LjY1MTY5IDMuOTU5MzcgNS42NjAwNyAzLjM1MDU5IDYuNzY3NTMgMi45OTk1NEM3Ljg3NDk5IDIuNjQ4NDkgOS4wNDk5MyAyLjU2NTE5IDEwLjE5NTggMi43NTY1QzExLjM0MTcgMi45NDc4IDEyLjQyNTkgMy40MDgyNCAxMy4zNTkzIDQuMUMxMy40ODQyIDQuMjAxNTEgMTMuNTY1MSA0LjM0NzMgMTMuNTg1MiA0LjUwNjk5QzEzLjYwNTMgNC42NjY2OSAxMy41NjMxIDQuODI3OTkgMTMuNDY3MiA0Ljk1NzI5QzEzLjM3MTMgNS4wODY1OSAxMy4yMjkzIDUuMTczOTEgMTMuMDcwNiA1LjIwMTA4QzEyLjkxMiA1LjIyODI1IDEyLjc0OSA1LjE5MzE2IDEyLjYxNTUgNS4xMDMxM0MxMS41MTM5IDQuMjg1MjEgMTAuMTY4NSAzLjg2MjgyIDguNzk3MDQgMy45MDQyNUM3LjQyNTU3IDMuOTQ1NjkgNi4xMDgxNyA0LjQ0ODU0IDUuMDU3ODkgNS4zMzE0N0M0LjAwNzYxIDYuMjE0NCAzLjI4NTg2IDcuNDI1OCAzLjAwOTM2IDguNzY5NzVDMi43MzI4NyAxMC4xMTM3IDIuOTE3NzkgMTEuNTExNiAzLjUzNDIzIDEyLjczNzVDNC4xNTA2NiAxMy45NjMzIDUuMTYyNTcgMTQuOTQ1NCA2LjQwNjMgMTUuNTI0OEM3LjY1MDAzIDE2LjEwNDMgOS4wNTI4NyAxNi4yNDczIDEwLjM4NzkgMTUuOTMwN0MxMS43MjMgMTUuNjE0MSAxMi45MTIzIDE0Ljg1NjQgMTMuNzYzNCAxMy43ODAyQzE0LjYxNDUgMTIuNzA0IDE1LjA3NzcgMTEuMzcyMSAxNS4wNzggMTBDMTUuMDc3MSA5LjY3ODY2IDE1LjA1MSA5LjM1Nzg4IDE0Ljk5OTkgOS4wNDA2M0MxNC45ODcyIDguOTU4NTUgMTQuOTkwOCA4Ljg3NDc3IDE1LjAxMDQgOC43OTQwN0MxNS4wMzAxIDguNzEzMzggMTUuMDY1NCA4LjYzNzM0IDE1LjExNDUgOC41NzAzMUMxNS4xNjM1IDguNTAzMjggMTUuMjI1MyA4LjQ0NjU2IDE1LjI5NjIgOC40MDM0QzE1LjM2NzIgOC4zNjAyNCAxNS40NDYgOC4zMzE0NyAxNS41MjggOC4zMTg3NUMxNS42MTAxIDguMzA2MDMgMTUuNjkzOSA4LjMwOTYgMTUuNzc0NiA4LjMyOTI1QzE1Ljg1NTMgOC4zNDg5MSAxNS45MzEzIDguMzg0MjcgMTUuOTk4NCA4LjQzMzMxQzE2LjA2NTQgOC40ODIzNSAxNi4xMjIxIDguNTQ0MTEgMTYuMTY1MyA4LjYxNTA3QzE2LjIwODQgOC42ODYwMyAxNi4yMzcyIDguNzY0OCAxNi4yNDk5IDguODQ2ODhDMTYuMzA1OCA5LjIyODY1IDE2LjMzMTkgOS42MTQxOCAxNi4zMjggMTBDMTYuMzI2NCAxMS45NDcyIDE1LjU1MjEgMTMuODE0MSAxNC4xNzUzIDE1LjE5MUMxMi43OTg0IDE2LjU2NzggMTAuOTMxNSAxNy4zNDIxIDguOTg0MjkgMTcuMzQzOFoiIGZpbGw9IiM1RUE2MTEiLz4KPHBhdGggZD0iTTguODg4MDMgMTIuMzQzN0M4LjcyMjU0IDEyLjM0MyA4LjU2NDA4IDEyLjI3NjcgOC40NDc0MSAxMi4xNTkzTDUuNDc4NjYgOS4xOTA1OUM1LjM3NjI2IDkuMDcxMDMgNS4zMjI3NiA4LjkxNzIzIDUuMzI4ODQgOC43NTk5M0M1LjMzNDkxIDguNjAyNjQgNS40MDAxMiA4LjQ1MzQzIDUuNTExNDMgOC4zNDIxMkM1LjYyMjc0IDguMjMwODEgNS43NzE5NSA4LjE2NTYgNS45MjkyNSA4LjE1OTUyQzYuMDg2NTQgOC4xNTM0NSA2LjI0MDM0IDguMjA2OTUgNi4zNTk5MSA4LjMwOTM0TDguODg4MDMgMTAuODM0M0wxNi40MTYyIDMuMzA5MzRDMTYuNTM1NyAzLjIwNjk1IDE2LjY4OTUgMy4xNTM0NSAxNi44NDY4IDMuMTU5NTJDMTcuMDA0MSAzLjE2NTYgMTcuMTUzMyAzLjIzMDgxIDE3LjI2NDYgMy4zNDIxMkMxNy4zNzU5IDMuNDUzNDMgMTcuNDQxMSAzLjYwMjY0IDE3LjQ0NzIgMy43NTk5NEMxNy40NTMzIDMuOTE3MjMgMTcuMzk5OCA0LjA3MTAzIDE3LjI5NzQgNC4xOTA1OUw5LjMyODY2IDEyLjE1OTNDOS4yMTE5OCAxMi4yNzY3IDkuMDUzNTIgMTIuMzQzIDguODg4MDMgMTIuMzQzN1oiIGZpbGw9IiM1RUE2MTEiLz4KPC9zdmc+Cg==) no-repeat center / 18px;
+}
+
+.green-lamp {
+    right: calc(100% + 30px);
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAxNSAyMSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTkuMDA3MDEgMTYuMDYwOUg2LjM5MDA5QzYuMjA5NTIgMTYuMDYwOSA2LjA2Mjk3IDE2LjIzNjkgNi4wNjI5NyAxNi40NTM3QzYuMDYyOTcgMTYuNjcwNiA2LjIwOTUyIDE2Ljg0NjUgNi4zOTAwOSAxNi44NDY1SDkuMDA3MDFDOS4xODc1NyAxNi44NDY1IDkuMzM0MTIgMTYuNjcwNiA5LjMzNDEyIDE2LjQ1MzdDOS4zMzQxMiAxNi4yMzY5IDkuMTg3NTcgMTYuMDYwOSA5LjAwNzAxIDE2LjA2MDlaTTkuMDA3MDEgMTcuNjMyMkg2LjM5MDA5QzYuMjA5NTIgMTcuNjMyMiA2LjA2Mjk3IDE3LjgwODIgNi4wNjI5NyAxOC4wMjVDNi4wNjI5NyAxOC4yNDE5IDYuMjA5NTIgMTguNDE3OSA2LjM5MDA5IDE4LjQxNzlIOS4wMDcwMUM5LjE4NzU3IDE4LjQxNzkgOS4zMzQxMiAxOC4yNDE5IDkuMzM0MTIgMTguMDI1QzkuMzM0MTIgMTcuODA4MiA5LjE4NzU3IDE3LjYzMjIgOS4wMDcwMSAxNy42MzIyWk04LjQxNDEyIDE5LjgwMkM4LjY2MzQ5IDE5LjYwNDcgOC41MjM5OCAxOS4yMDM1IDguMjA2MDEgMTkuMjAzNUg3LjE5MTU0QzYuODczNTYgMTkuMjAzNSA2LjczNDEyIDE5LjYwNDggNi45ODM1NyAxOS44MDJDNi45OTcwMSAxOS44MTI2IDcuMDA5NDYgMTkuODI0NCA3LjAyMTc0IDE5LjgzNjNDNy4xMjE2NyAxOS45MzM0IDcuMjYxMjcgMTkuOTg5MiA3LjQwNjExIDE5Ljk4OTJINy45OTE2NEM4LjEzNTg4IDE5Ljk4OTIgOC4yNzYwNSAxOS45MzM0IDguMzc2MDUgMTkuODM2M0M4LjM4ODMgMTkuODI0NCA4LjQwMDcyIDE5LjgxMjYgOC40MTQxMiAxOS44MDJaTTExLjYyMzkgOC4zNjIxOEMxMS42MjM5IDEwLjM5OSAxMC41MTQ1IDExLjk1NyA5LjkwNzM0IDEzLjUwNUM5LjUzOTggMTQuNDQyMiA4LjcwNTE5IDE1LjI3NTIgNy42OTg1NSAxNS4yNzUyQzYuNjkxOTEgMTUuMjc1MiA1Ljg1NzI5IDE0LjQ0MjIgNS40ODk3NiAxMy41MDVDNC44ODI2MyAxMS45NTcgMy43NzMxNyAxMC4zOTkgMy43NzMxNyA4LjM2MjE4QzMuNzczMTcgNS40MzcxNiA1LjczNDU1IDMuODI3MzQgNy42OTY1OCAzLjgyNzM0QzkuNjU5OTMgMy44MjczNCAxMS42MjM5IDUuNDM4NzMgMTEuNjIzOSA4LjM2MjE4Wk0xMy43MDE4IDcuODE5NTRDMTMuOTk5NCA3LjgxOTQgMTQuMjQwOCA4LjA2MDY4IDE0LjI0MDggOC4zNTgzOEMxNC4yNDA4IDguNjU1OTcgMTMuOTk5NiA4Ljg5NzIxIDEzLjcwMiA4Ljg5NzIxSDEzLjExNjJDMTIuODI3IDguODk3MjEgMTIuNjA1MyA4LjY1MTM3IDEyLjYwNTMgOC4zNjIxOEMxMi42MDUzIDguMDY4NCAxMi44MzEzIDcuODE5OTUgMTMuMTI1MSA3LjgxOTgxTDEzLjcwMTggNy44MTk1NFpNNy42OTY1OCAyLjY0ODA2QzcuNDY2MjcgMi42NDgwNiA3LjI3NDYgMi40Nzg0OSA3LjI3NDYgMi4yNDgxN1YxLjU4MTc4QzcuMjc0NiAxLjMzNDA5IDcuNDc1MzkgMS4xMzMzIDcuNzIzMDggMS4xMzMzQzcuOTcwNzcgMS4xMzMzIDguMTcxNTUgMS4zMzQwOSA4LjE3MTU1IDEuNTgxNzhWMi4yMDAyOUM4LjE3MTU1IDIuNDU0NDEgNy45NTA3IDIuNjQ4MDYgNy42OTY1OCAyLjY0ODA2Wk0xMS4xODEgNC4xNzg4NkMxMS4wMzI1IDQuMDA5MTggMTAuOTkxOSAzLjc0MzUxIDExLjEyNzIgMy41NjMxTDExLjU2NjEgMi45Nzc5OUMxMS43NDcgMi43MzY3NiAxMi4xMDIzIDIuNzE4NTMgMTIuMzA3IDIuOTM5OTZDMTIuNDY1NCAzLjExMTI2IDEyLjQ3ODYgMy4zNzEyNiAxMi4zMzg1IDMuNTU3NzdMMTEuODg1NiA0LjE2MDc1QzExLjcxMSA0LjM5MzE4IDExLjM3MjUgNC4zOTc1OCAxMS4xODEgNC4xNzg4NlpNNC4yMTI2NCA0LjE3ODYzQzQuMDIxIDQuMzk3NCAzLjY4MjEyIDQuMzkzMDYgMy41MDc0NCA0LjE2MDUyTDMuMDU0NjYgMy41NTc3N0MyLjkxNDU2IDMuMzcxMjYgMi45Mjc4MSAzLjExMTI2IDMuMDg2MTUgMi45Mzk5NkMzLjI5MDgzIDIuNzE4NTMgMy42NDYxMyAyLjczNjc2IDMuODI3MDcgMi45Nzc5OUw0LjI2NjEyIDMuNTYzMzVDNC40MDEzOCAzLjc0MzY4IDQuMzYxMTcgNC4wMDkwNiA0LjIxMjY0IDQuMTc4NjNaTTIuNzkxODIgOC4zNjIxOEMyLjc5MTgyIDguNjUxMzcgMi41NzAxNCA4Ljg5NzIxIDIuMjgwOTQgOC44OTcyMUgxLjY5NTIxQzEuMzk3NTUgOC44OTcyMSAxLjE1NjI1IDguNjU1OTEgMS4xNTYyNSA4LjM1ODI1QzEuMTU2MjUgOC4wNjA1OSAxLjM5NzU1IDcuODE5MjggMS42OTUyMSA3LjgxOTI4SDIuMjcxMjRDMi41NjU0IDcuODE5MjggMi43OTE4MiA4LjA2ODAyIDIuNzkxODIgOC4zNjIxOFoiIGZpbGw9IiM4OUQzMjkiLz4KPHBhdGggZD0iTTguMjA2MDUgMTguOTUzNkM4LjcyNjMgMTguOTUzNyA4Ljk3MjM5IDE5LjU2ODYgOC42NDI1OCAxOS45MjkyTDguNTY5MzQgMTkuOTk4NUw4LjU0OTggMjAuMDE1MUM4LjQwMTQyIDIwLjE1OTMgOC4xOTgwNCAyMC4yMzg4IDcuOTkxMjEgMjAuMjM4OEg3LjQwNjI1QzcuMjI0NjYgMjAuMjM4OCA3LjA0NjI2IDIwLjE3ODYgNi45MDUyNyAyMC4wNjY5TDYuODQ3NjYgMjAuMDE1MUw2LjgyODEyIDE5Ljk5ODVDNi4zOTI3OSAxOS42NTQ0IDYuNjM2NDggMTguOTUzNyA3LjE5MTQxIDE4Ljk1MzZIOC4yMDYwNVpNOS4wMDY4NCAxNy4zODIzQzkuMzY2MzIgMTcuMzgyMyA5LjU4MzkyIDE3LjcxNDggOS41ODM5OCAxOC4wMjQ5QzkuNTgzOTggMTguMzM1IDkuMzY2MzcgMTguNjY3NSA5LjAwNjg0IDE4LjY2NzVINi4zODk2NUM2LjAzMDM3IDE4LjY2NzIgNS44MTI1IDE4LjMzNDkgNS44MTI1IDE4LjAyNDlDNS44MTI1NiAxNy43MTUgNi4wMzA0MiAxNy4zODI2IDYuMzg5NjUgMTcuMzgyM0g5LjAwNjg0Wk05LjAwNjg0IDE1LjgxMUM5LjM2NjM0IDE1LjgxMSA5LjU4Mzk0IDE2LjE0MzUgOS41ODM5OCAxNi40NTM2QzkuNTgzOTggMTYuNzYzNyA5LjM2NjM3IDE3LjA5NjIgOS4wMDY4NCAxNy4wOTYySDYuMzg5NjVDNi4wMzAzNyAxNy4wOTU5IDUuODEyNSAxNi43NjM2IDUuODEyNSAxNi40NTM2QzUuODEyNTQgMTYuMTQzNyA2LjAzMDQxIDE1LjgxMTMgNi4zODk2NSAxNS44MTFIOS4wMDY4NFpNNy42OTYyOSAzLjU3NzY0QzkuODA3NDkgMy41Nzc2NCAxMS44NzM5IDUuMzEwNjEgMTEuODc0IDguMzYxODJDMTEuODc0IDkuNDI2OTMgMTEuNTgzNCAxMC4zNjEzIDExLjIyMzYgMTEuMjE0NEMxMS4wNDQyIDExLjYzOTcgMTAuODQ1NiAxMi4wNDkzIDEwLjY1NzIgMTIuNDQyOUMxMC41MTUgMTIuNzQgMTAuMzc4NyAxMy4wMjgyIDEwLjI1NjggMTMuMzEzTDEwLjEzOTYgMTMuNTk2MkM5Ljc1MTg4IDE0LjU4NDkgOC44NDgxMiAxNS41MjQ5IDcuNjk4MjQgMTUuNTI0OUM2LjYyMDM1IDE1LjUyNDcgNS43NTg5MSAxNC42OTg3IDUuMzM1OTQgMTMuNzgwOEw1LjI1Njg0IDEzLjU5NjJDNS4xMDg4NCAxMy4yMTg5IDQuOTI5NzkgMTIuODM4OCA0Ljc0MDIzIDEyLjQ0MjlDNC41NTE4MyAxMi4wNDkzIDQuMzUzMjMgMTEuNjM5NyA0LjE3MzgzIDExLjIxNDRDMy44MTQwNiAxMC4zNjEzIDMuNTIzNDQgOS40MjY5MyAzLjUyMzQ0IDguMzYxODJDMy41MjM2IDUuMzA5MzggNS41ODYzIDMuNTc3OCA3LjY5NjI5IDMuNTc3NjRaTTIuMjcxNDggNy41Njg4NUMyLjcxNjkyIDcuNTY4OTggMy4wNDE4MSA3Ljk0MzY3IDMuMDQxOTkgOC4zNjE4MkMzLjA0MTk5IDguNzczNzEgMi43MjMxNiA5LjE0NjggMi4yODEyNSA5LjE0Njk3SDEuNjk1MzFDMS4yNTk1OCA5LjE0Njk3IDAuOTA2MjUgOC43OTM2NCAwLjkwNjI1IDguMzU3OTFDMC45MDY0MzIgNy45MjIzMyAxLjI1OTY5IDcuNTY4ODUgMS42OTUzMSA3LjU2ODg1SDIuMjcxNDhaTTEzLjcwMTIgNy41Njk4MkwxMy43ODIyIDcuNTczNzNDMTQuMTggNy42MTM5MiAxNC40OTEgNy45NDk1MyAxNC40OTEyIDguMzU3OTFDMTQuNDkxMiA4Ljc5MzUyIDE0LjEzNzcgOS4xNDY5IDEzLjcwMjEgOS4xNDY5N0gxMy4xMTYyQzEyLjY3NDEgOS4xNDY5NyAxMi4zNTU1IDguNzczODEgMTIuMzU1NSA4LjM2MTgyQzEyLjM1NTcgNy45NDQwNCAxMi42Nzk4IDcuNTcwMDQgMTMuMTI1IDcuNTY5ODJIMTMuNzAxMlpNMTEuNDIwOSAyLjc2MzE4QzExLjcwNzUgMi40NjAwNCAxMi4xOTkgMi40NTUzNSAxMi40OTAyIDIuNzcwMDJMMTIuNTcwMyAyLjg3MzU0QzEyLjcwOTIgMy4wOTA5IDEyLjcyMzQgMy4zNjY4MSAxMi42MDc0IDMuNTk3MTdMMTIuNTM4MSAzLjcwNzUyTDEyLjA4NSA0LjMxMTA0QzExLjgyNzEgNC42NTM5NCAxMS4zNDggNC42NzQxNyAxMS4wNDk4IDQuNDAxODZMMTAuOTkzMiA0LjM0MzI2QzEwLjc4NzIgNC4xMDc5NyAxMC43MDQxIDMuNzExMDUgMTAuOTI2OCAzLjQxMzU3TDExLjM2NjIgMi44Mjc2NEwxMS40MjA5IDIuNzYzMThaTTIuOTYyODkgMi43MTE0M0MzLjI3OTA3IDIuNDM4NjkgMy43Njk4MiAyLjQ4NDQgNC4wMjczNCAyLjgyNzY0TDQuNDY1ODIgMy40MTM1N0w0LjUzNjEzIDMuNTI4ODFDNC42NDgyNiAzLjc2NzM1IDQuNjAwOTMgNC4wNDM2NSA0LjQ3MTY4IDQuMjQ3NTZMNC40MDAzOSA0LjM0MzI2QzQuMTI4MDUgNC42NTQwNiAzLjY0ODAxIDQuNjc1MzggMy4zNjIzIDQuMzc1NDlMMy4zMDc2MiA0LjMxMTA0TDIuODU0NDkgMy43MDc1MkMyLjY0MjE3IDMuNDI0NDggMi42NjIxNCAzLjAyOTg4IDIuOTAyMzQgMi43NzAwMkwyLjk2Mjg5IDIuNzExNDNaTTcuNzIyNjYgMC44ODMzMDFDOC4xMDgzNCAwLjg4MzMwMSA4LjQyMTc1IDEuMTk1ODkgOC40MjE4OCAxLjU4MTU0VjIuMjAwNjhDOC40MjE2NSAyLjYxMTQ0IDguMDY4OCAyLjg5Nzk1IDcuNjk2MjkgMi44OTc5NUM3LjM0NjA1IDIuODk3OCA3LjAyNDYyIDIuNjMzODggNy4wMjQ0MSAyLjI0ODU0VjEuNTgxNTRDNy4wMjQ1NCAxLjE5NjAzIDcuMzM3MTcgMC44ODM1MjkgNy43MjI2NiAwLjg4MzMwMVoiIHN0cm9rZT0iYmxhY2siIHN0cm9rZS1vcGFjaXR5PSIwLjgiIHN0cm9rZS13aWR0aD0iMC41Ii8+Cjwvc3ZnPgo=) no-repeat center / 18px;
+}
+
+    </style>
+    <main class="main-content"><section class="table-section"><h2>Структура компании</h2>
+            <table class="personnel"><tbody class="main-table-body" id="main-table-body"></tbody></table></section></main><script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const personnel = {
+            
+		sub_1: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a47e211172;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=00000000000000000000000000000000", 
+                            name: "Администрация",
+                            leader: 'Новиков Владимир Михайлович',
+                            position: "",
+                            style: "division",
+                            level: 0,
+                            tick: false,
+                            lamp: false,
+                            subordinates: {top_2: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a47e211172;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=aff8c59bd63081944abd572de54236eb", 
+                            name: " (Рекрутер)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 1,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },top_3: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00a9e5324337;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a47e211172;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=a50ba4b8299f6c10426fc19b2fdd9acb", 
+                            name: "Блинов Демид Адамович (Директор)",
+                            leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 1,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },top_4: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a484473215;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=00000000000000000000000000000000", 
+                            name: "Бухгалтерия",
+                            leader: '',
+                            position: "",
+                            style: "division",
+                            level: 1,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {sub_5: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973070;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a484473215;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=a9d6aeed93859885453fd8ec555e8906", 
+                            name: "Волков Артём Владиславович (Бухгалтер)",
+                            leader: 'Новиков Владимир Михайлович',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_6: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973071;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a484473215;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b31bd458c5d75fa345d7a5b1b9ae78b1", 
+                            name: "Дмитриева Дарья Адамовна (Помощник Бухгалтера)",
+                            leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_7: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a484473215;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=ae82d6f27e1970784cfd1301c6a15aad", 
+                            name: " (Бухгалтер)",
+                            leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },}
+                        },top_8: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=00000000000000000000000000000000", 
+                            name: "Отдел закупок",
+                            leader: '',
+                            position: "",
+                            style: "division",
+                            level: 1,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {sub_9: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973072;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=96657b6ccf34c0484416a503cb2cd442", 
+                            name: "Еремин Роман Даниилович (Специалист по анализу рынка)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_10: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973073;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b0f77e4483aeb90c4f945291312de5a6", 
+                            name: "Киселев Михаил Константинович (Руководитель отдела по закупкам)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_11: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973074;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=baaa7efa80e83ce54285eeeae22d3d83", 
+                            name: "Козловская Мия Глебовна (Помощник руководителя по закупкам)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_12: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=84873cecef02206511ef379151d82e68;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=88ecee06744943cb47ae3b197927c271", 
+                            name: "Овсянников Макар Сергеевич (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_13: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=84893cecef02206511ef48ba0d6fafac;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a71811907d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b10c21670d17c66e4593152847ba07d9", 
+                            name: "Фокин Алексей Алексеевич (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: true,
+                            subordinates: {}
+                        },sub_14: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=00000000000000000000000000000000", 
+                            name: "Отдел продаж и обслуживания клиентов",
+                                    leader: '',
+                            position: "",
+                            style: "division",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {sub_15: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b7eb04c62b9fde4e42ef957eb44129f7", 
+                            name: " (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_16: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=816152331691241f4b36cea32d72a8c7", 
+                            name: " (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_17: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=84853cecef02206511ef144d1ec36ca0;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=bc6cbfe9eada0e144481b8aec1a639c6", 
+                            name: "Блэк Борис Федорович (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: true,
+                                    lamp: true,
+                            subordinates: {}
+                        },sub_18: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=848a3cecef02206511ef6c32d941f89f;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=a1e3fd96112213574e39f2e38139aa8e", 
+                            name: "Петров Петр Петрович (Менеджер)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_19: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973078;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b6caf63ecf15e1804e80edcffccf6e70", 
+                            name: "Петрова Анастасия Ярославовна (Руководитель отдела по продажам)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_20: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973079;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=8941dd2fab53de744467e2c8c0b47975", 
+                            name: "Рябова Мадина Ивановна (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_21: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab73a1ef72;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=921f62471e0626af41e82e09dcc42c74", 
+                            name: "Сидорова Алёна Демидовна (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_22: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab73a1ef73;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a7005f61f7;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=b4828aba1b6af7ed41c748b4426eb045", 
+                            name: "Щербаков Кирилл Семёнович (Продавец-консультант)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 3,
+                                    tick: true,
+                                    lamp: true,
+                            subordinates: {}
+                        },}
+                        },}
+                        },top_23: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=00000000000000000000000000000000", 
+                            name: "Отдел по персоналу",
+                                    leader: '',
+                            position: "",
+                            style: "division",
+                            level: 1,
+                            subordinates: {sub_24: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=00000000000000000000000000000000;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=afe813d5a71caa4f4670330b15da5319", 
+                            name: " (Рекрутер)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                                    lamp: false,
+                            subordinates: {}
+                        },sub_25: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973075;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=bc6ab181ebe50b914ffd34cf07e643ec", 
+                            name: "Костин Вадим Арсентьевич (Руководитель отдела по персоналу)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                            lamp: false,
+                            subordinates: {}
+                        },sub_26: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973076;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=96dbd0828a5e24d04864147ad3dd10f2", 
+                            name: "Лопатина Ева Алексеевна (Специалист по оценке и развитию персонала)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                            lamp: false,
+                            subordinates: {}
+                        },sub_27: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=847d3cecef02206511ef00ab1e973077;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=a6ce6984d0ad51684e7770d982e87698", 
+                            name: "Маркелов Михаил Макарович (Рекрутер)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                            lamp: false,
+                            subordinates: {}
+                        },sub_28: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=84893cecef02206511ef48cca21c7f0c;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=a8f4536f29d3387c4ee9e6cdb886825e", 
+                            name: "Мухин Леонид Викторович (Специалист по оценке и развитию персонала)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                            lamp: false,
+                            subordinates: {}
+                        },sub_29: {
+                            guid: '0000003',
+                            id: "Сотрудник,e1cib/data/Справочник.KPI_Сотрудники?ref=84893cecef02206511ef4831e5ec8f10;Подразделение,e1cib/data/Справочник.KPI_Подразделения?ref=847d3cecef02206511ef00a706d0c27d;Должность,e1cib/data/Справочник.KPI_Должности?ref=00000000000000000000000000000000;СтруктураКомпании,e1cib/data/Справочник.KPI_СтруктураКомпании?ref=822047f7bb7677c547bd4a5448de46de", 
+                            name: "Фенов Филипп Филиппович (Рекрутер)",
+                                    leader: '',
+                            position: "",
+                            style: "employee",
+                            level: 2,
+                                    tick: false,
+                            lamp: false,
+                            subordinates: {}
+                        },}
+                        },}
+                        },	
+			
+            };
+
+            const statusToggle = (selector, prev, next) => {
+                selector.classList.remove(prev);
+                selector.classList.add(next);
+            }
+
+            const levelsToOpen = 0; // количество предварительно открываемых уровней
+            const paddingLeft = 21; //
+
+            const tbody = document.getElementById('main-table-body');
+            const insertRows = (place, position, rows) => place.insertAdjacentElement(position, rows);
+            const showPersonnel = (personnel, placeToInsert, positionToInsert, paddingLeft) => Object.values(personnel).map(item => {
+                const fio = document.createElement('tr');
+                fio.className = 'row';
+                fio.setAttribute('id', item.guid);
+                fio.dataset.level = item.level;
+
+                const button = `<button class="show-btn plus" data-level="${item.level}"></button>`;
+                const isSubordinates = Object.keys(item.subordinates).length !== 0 && item.subordinates && item.subordinates !== undefined;
+
+                fio.innerHTML = `<td class="row-content" data-level="${item.level}" style="padding-left: ${isSubordinates ? paddingLeft : paddingLeft + 17}px">
+                    <span>${isSubordinates ? button : ''}</span>
+
+                    <span class="row-img ${item.style}">
+                        ${item.lamp ? '<span class="green-lamp"></span>' : ''}
+                        ${item.tick ? '<span class="green-tick"></span>' : ''}
+                    </span>
+					<span id="ОбновитьВиджет ${!isSubordinates ? item.id : ''}">${item.name}</span>${item.leader !== '' ? `<span class="leader">${item.leader}</span>` : ''}</td>
+                </td>`
+
+                fio.addEventListener('click', e => {
+                    const showBtn = e.target.classList.contains('show-btn');
+
+                    if (showBtn) {
+                        const clicked = e.target.classList.contains('minus'); // если на кнопке установлен класс minus, то ясно что кнопка нажата
+
+                        if (!clicked) {
+                            statusToggle(e.target, 'plus', 'minus'); // если кнопка не была нажата, то меняем класс minus на plus
+                            showPersonnel(item.subordinates || {}, e.currentTarget, 'afterend', paddingLeft + 21);
+                        } else {
+                            statusToggle(e.target, 'minus', 'plus'); // если кнопка была нажата, то меняем класс plus на minus
+                            const parentRow = e.target.closest('.row');
+                            let sibling = parentRow.nextElementSibling;
+                            const currentLevel = +parentRow.dataset.level;
+
+                            while (sibling && +sibling.dataset.level > currentLevel) {
+                                sibling.remove();
+                                sibling = parentRow.nextElementSibling;
+                            }
+                        }
+                    } else {
+                        const allRows = tbody.querySelectorAll('.row');
+                        allRows.forEach(row => row.classList.remove('selected'));
+                        e.currentTarget.classList.add('selected');
+                    }
+                });
+
+                insertRows(placeToInsert, positionToInsert, fio)
+            });
+
+            showPersonnel(personnel, tbody, 'beforeend', paddingLeft);
+
+            if (levelsToOpen > 0) {
+                for (let i = 0; i < levelsToOpen; i++) {
+                    const btns = tbody.querySelectorAll(`.plus[data-level="${i}"]`);
+                    btns.forEach(btn => btn.click());
+                }
+            }
+        });
+    </script></body></html>

@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Business-goals</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <section class="business-goals">
+        <header>
+            <h2>Мои бизнес-цели</h2>
+            <button class="business-goals__add-row-btn" id="add-row-btn" type="button"></button>
+        </header>
+        <div class="table-wrapper">
+            <table class="business-goals__table" id="business-goals__table">
+                <thead>
+                <tr>
+                    <th class="business-goals__number-col">№</th>
+                    <th class="business-goals__star-col"></th>
+                    <th class="business-goals__business-goal-col">Бизнес-цель</th>
+                    <th class="business-goals__team-col">Группа</th>
+                    <th class="business-goals__period-col">Срок</th>
+                    <th class="business-goals__status-col">Статус</th>
+                    <th class="business-goals__worker-comment-col">Комментарий сотрудника</th>
+                    <th class="business-goals__leader-comment-col">Комментарий руководителя</th>
+                    <th class="business-goals__delete-table-row-btn-col"></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </section>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const businessGoals = [
+                {
+                    star: false,
+                    business_goal: ['Наименование цели', 'Критерии выполнения', 'Задачи'],
+                    team: 'Командные',
+                    period: '24.10.2020',
+                    status: 'Новая',
+                    worker_comment: `Обычный комментарий`,
+                    leader_comment: `Не совсем обычный комментарий`,
+                },
+                {
+                    star: false,
+                    business_goal: ['Наименование цели', 'Критерии выполнения', 'Задачи'],
+                    team: 'Командные',
+                    period: '24.10.2020',
+                    status: 'Новая',
+                    worker_comment: `Обычный комментарий`,
+                    leader_comment: `Не совсем обычный комментарий`,
+                },
+                {
+                    star: true,
+                    business_goal: ['Наименование цели', 'Критерии выполнения', 'Задачи'],
+                    team: 'Проектная',
+                    period: '24.10.2020',
+                    status: 'В процессе',
+                    worker_comment: `Обычный комментарий`,
+                    leader_comment: `Не совсем обычный комментарий`,
+                },
+                {
+                    star: false,
+                    business_goal: ['Наименование цели', 'Критерии выполнения', 'Задачи'],
+                    team: 'Индивидуальные',
+                    period: '24.10.2020',
+                    status: 'Приостановлена',
+                    worker_comment: `Обычный комментарий`,
+                    leader_comment: `Не совсем обычный комментарий`,
+                },
+                {
+                    star: false,
+                    business_goal: ['Наименование цели', 'Критерии выполнения', 'Задачи'],
+                    team: 'Индивидуальные',
+                    period: '24.10.2020',
+                    status: 'Завершена',
+                    worker_comment: `Обычный комментарий`,
+                    leader_comment: `Не совсем обычный комментарий`,
+                },
+            ]; // массив с данными для строк таблицы (с объектами)
+
+            //---------- Рабочая область ----------//
+
+            const engStatus = {
+                'Новая': 'new',
+                'В процессе': 'in-progress',
+                'Приостановлена': 'paused',
+                'Завершена': 'completed'
+            } // перевод статусов на английский
+
+            const statusesList = status => `<div class="statuses">
+                <span class="current-status ${engStatus[status]}" data-property="current_status">${status}</span>
+                <ul class="statuses-list">
+                    <li>
+                        <button class="status-btn new" data-status="Новая" data-property="status_btn" type="button">Новая</button>
+                    </li>
+                    <li>
+                        <button class="status-btn in-progress" data-status="В процессе" data-property="status_btn" type="button">В процессе</button>
+                    </li>
+                    <li>
+                        <button class="status-btn paused" data-status="Приостановлена" data-property="status_btn" type="button">Приостановлена</button>
+                    </li>
+                    <li>
+                        <button class="status-btn completed" data-status="Завершена" data-property="status_btn" type="button">Завершена</button>
+                    </li>
+                </ul>
+            </div>`; // создание списка со статусами
+
+            const extraStatuses = ['Приостановлена', 'Завершена'];
+
+            const grayText = (e, status) => {
+                const currentRow = e.target.closest('tr');
+                const rowColumns = currentRow.querySelectorAll('td:not(.business-goals__number-col, .business-goals__star-col, .business-goals__status-col, .business-goals__delete-table-row-btn-col)');
+
+                extraStatuses.includes(status)
+                    ? rowColumns.forEach(cell => cell.classList.add('paused'))
+                    : rowColumns.forEach(cell => cell.classList.remove('paused'));
+            } // перекрашивание текста внутри строки при смене статуса
+
+            const businessGoalsTable = document.querySelector('#business-goals__table > tbody'); // идентификация тела таблицы
+            const businessGoalsTableRows = Array.isArray(businessGoals) ? businessGoals.map((row, index) => {
+                index++;
+
+                const star = row.star ? 'colored-star' : '';
+
+                const gray = !extraStatuses.includes(row.status) ? '' : 'paused';
+
+                return `<tr class="business-goals__table-row" data-row-number="${index}">
+                    <td class="business-goals__number-col">${index}</td>
+                    <td class="business-goals__star-col ${star}"></td>
+                    <td class="business-goals__business-goal-col ${gray}">
+                        <span>Outcome: ${row.business_goal[0]}</span>
+                        <span>Output: ${row.business_goal[1]}</span>
+                        <span>Tasks: ${row.business_goal[2]}</span>
+                    </td>
+                    <td class="business-goals__team-col ${gray}">${row.team}</td>
+                    <td class="business-goals__period-col ${gray}">${row.period}</td>
+                    <td class="business-goals__status-col">${statusesList(row.status)}</td>
+                    <td class="business-goals__worker-comment-col ${gray}">
+                       <pre>${row.worker_comment}</pre>
+                    </td>
+                    <td class="business-goals__leader-comment-col ${gray}">
+                       <pre>${row.leader_comment}</pre>
+                    </td>
+                    <td class="business-goals__delete-table-row-btn-col">
+                        <button class="delete-table-row" type="button"></button>
+                    </td>
+                </tr>`;
+            }) : []; // построение строк таблицы
+
+            businessGoalsTable.insertAdjacentHTML('beforeend', businessGoalsTableRows.join('')); // добавление массива строк в тело таблицы
+
+            // ---------- Список событий ---------- //
+
+            const classToggle = selector => {
+                !selector.classList.contains('show')
+                    ? selector.classList.add('show')
+                    : selector.classList.remove('show');
+            }; // скрыть/показать элемент посредством удаления у него класса hide
+
+            const events = {
+                status_btn: e => {
+                    const status = e.target.dataset.status; // получение выбранного статуса (класса)
+                    const prevStatus = e.target.closest('.statuses').querySelector('.current-status'); // обращение к элементу с текущим статусом
+                    const listParent = e.target.closest('.statuses-list'); // обращение к родительскому списку статусов
+
+                    prevStatus.className = `current-status ${engStatus[status]}`; // смена цветового класса
+                    prevStatus.innerText = status; // присвоение выбранного статуса
+                    classToggle(listParent); // смена состояния видимости элемента
+                    grayText(e, status);
+                }, // выбор статуса
+                current_status: e => {
+                    e.stopPropagation(); // отмена всплытия
+                    const list = e.target.nextElementSibling; // получение соседнего элемента
+
+                    try {
+                        const showedLists = document.querySelectorAll('.statuses-list.show');
+                        showedLists.forEach(list => list.classList.remove('show'));
+                    } catch (err) {
+                        // не требует обработки
+                    }
+
+                    classToggle(list) // смена состояния видимости элемента
+                }, // появление или скрытие списка статусов при клике на текущий статус
+            }; // список событий доступных у таблицы бизнес-целей
+
+            // ---------- Выбор статуса внутри строки ---------- //
+
+            businessGoalsTable.addEventListener('click', e => {
+                try {
+                    events[e.target.dataset.property](e);
+                } catch (err) {
+                    // не требует обработки
+                }
+            }); // делегирование событий на таблицу бизнес-целей
+
+            const getEventPath = e => {
+                if (e.composedPath) {
+                    return e.composedPath();
+                }
+
+                // Полифил для старых браузеров и 1С
+                let path = [];
+                let target = e.target;
+
+                while (target) {
+                    path.push(target);
+                    target = target.parentNode;
+                }
+
+                // Добавляем window, если дошли до верха
+                if (path.indexOf(window) === -1 && path.indexOf(document) === -1) {
+                    path.push(window);
+                }
+
+                return path;
+            }
+
+            document.addEventListener('click', e => {
+                try {
+                    const path = getEventPath(e); // получение массива глубины клика
+                    const statusesList = document.querySelector('.statuses-list.show'); // поиск любого списка статусов с классом show
+
+                    if (!path.includes(statusesList)) {
+                        classToggle(statusesList);
+                    } // скрытие списка со статусами, если клик произошел в любом месте экрана, кроме самого списка
+                } catch (err) {
+                    // не требует обработки
+                }
+            });
+        });
+    </script>
+</body>
+</html>

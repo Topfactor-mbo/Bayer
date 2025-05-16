@@ -1,0 +1,92 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+}
+
+body {
+    padding: 10px;
+    background-color: #cfd6dc;
+}
+
+.statuses-panel {
+    width: 100%;
+    border: 1px solid #dedada;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    padding: 35px 50px 15px;
+    background-color: #fff;
+}
+
+.statuses-wrapper {
+    width: 93%;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    position: relative;
+    height: 100%;
+}
+
+.straight-line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: #007cbf;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+.circle-status {
+    width: 40px;
+    height: 40px;
+    border: 2px solid #007cbf;
+    border-radius: 50%;
+    background-color: #fff;
+    z-index: 1;
+    position: relative;
+}
+
+.circle-status > span {
+    text-transform: uppercase;
+    color: #003a4f;
+    display: inline-block;
+    position: absolute;
+    bottom: calc(100% + 5px);
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: 600;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.circle-status:not(:nth-of-type(1)):before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) rotate(-90deg);
+    right: calc(100% - 4px);
+    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iOCIgdmlld0JveD0iMCAwIDE2IDgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xNC4wNTY2IDEuMDAwMDZMNy45ODEyIDYuNzA3NTJMMS45MDU3NiAxLjAwMDA2IiBzdHJva2U9IiMwMDdDQkYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=) no-repeat center / 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.passed {
+    background-color: #89d329;
+}
+
+.launched {
+    background-color: #fbc34e;
+}
